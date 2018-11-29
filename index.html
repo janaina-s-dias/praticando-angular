@@ -1,0 +1,116 @@
+<html ng-app="listaTelefonica">
+    <head>
+        <title>Lista Telefonica</title>
+
+        <style>
+
+            .jumbotron {
+                width: 400px;
+                text-align: center;
+                margin-top: 20px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .table {
+                margin-top: 20px;
+            }
+
+            .form-control{
+                margin-top: 20px;
+            }
+
+            .btn {
+                margin-top: 20px;
+            }
+
+            .selecionado {
+                background-color: yellow;
+            }
+
+            .negrito {
+                font-weight: bold;
+            }
+
+        </style>
+
+
+        <link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.css">
+        <script src="lib/angular/angular.js"></script>
+        <script>
+            angular.module("listaTelefonica", []);
+            angular.module("listaTelefonica").controller("listaTelefonicaCtrl", function($scope){
+                $scope.app = "Lista Telefônica";
+                $scope.contatos = [
+                    {nome: "Paulo", telefone: "981187454"},
+                    {nome: "Janaina", telefone: "981193239"},
+                    {nome: "Maria", telefone: "981187412"}
+                ];
+
+                $scope.operadoras = [
+                    {nome: "Oi", codigo: 14, categoria: "Celular"},
+                    {nome: "Vivo", codigo: 15, categoria: "Celular"},
+                    {nome: "Tim", codigo: 41, categoria: "Celular"},
+                    {nome: "GVT", codigo: 25, categoria: "Fixo"},
+                    {nome: "Embratel", codigo: 21, categoria: "Fixo"}
+                ];
+
+                $scope.adicionarContato = function (contato) {
+                    $scope.contatos.push(angular.copy(contato));
+                    delete $scope.contato;
+                };
+
+
+                $scope.apagarContatos = function (contatos) {
+                    
+                   var contatosSelecionados = contatos.filter(function(contato){
+                        if(contato.selecionado) return contato;    
+                    });
+
+                    console.log(contatosSelecionados);
+                };
+            });
+        </script>
+    </head>
+    <body ng-controller="listaTelefonicaCtrl">
+        <div class="jumbotron">
+            <h3>{{app}}</h3>
+            <table class="table">
+                <tr>
+                    <th></th>
+                    <th>Nome</th>
+                    <th>Telefone</th>
+                    <th>Operadora</th>
+                </tr>
+                <tr ng-class="{'selecionado negrito': contato.selecionado}" ng-repeat="contato in contatos">
+                    <td><input type="checkbox" ng-model="contato.selecionado"/></td>
+                    <td>{{contato.nome}}</td>
+                    <td>{{contato.telefone}}</td>
+                    <td>{{contato.operadora.nome}}</td>
+                </tr>
+            </table>
+            <hr/>
+            <input class="form-control" type="text" ng-model="contato.nome" placeholder="Nome"/>
+            <input class="form-control" type="text" ng-model="contato.telefone" placeholder="Telefone"/>
+            <select class="form-control" ng-model="contato.operadora" ng-options="operadora.nome for operadora in operadoras">
+                <option value="">Selecione uma operadora</option>
+            </select>
+            <button class="btn btn-primary btn-block" ng-click="adicionarContato(contato)" ng-disabled="!contato.nome || !contato.telefone">Adicionar Contato</button>
+            <button class="btn btn-danger btn-block" ng-click="apagarContatos(contatos)">Apagar Contatos</button>
+        </div>
+    </body>
+</html>
+
+
+<!--
+    Anotações
+    $scope é a 'ligação' entre a view e o controller
+    ng-bind: exibe uma informação do $scope na view
+    ng-model: envia uma informação da view para o $scope. Normalmente aplicado em inputs, selects e textareas
+    ng-click: atribuir um comportamento a um evento
+    ng-disabled: desabilitar
+    ng-options: renderiza opções de um select. Opção seja selecionada atribuída ao $scope
+        "group by operadora.categoria": utilizado para agrupar por categoria. Utilizado com a seguinte expressão:  operadora.nome group by contato.categoria for operadora in operadoras
+    ng-class:
+
+-->
